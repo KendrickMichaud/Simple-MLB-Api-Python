@@ -13,6 +13,9 @@ EXIT = 'exit'
 
 squery = "".split()
 
+def endpoint(player):
+    return urllib.request.urlopen("http://lookup-service-prod.mlb.com/json/named.search_player_all.bam?sport_code='mlb'&active_sw='Y'&name_part='" + player + "%25'").read()
+
 def menu():
     
     print("Welcome, when querying and collecting, space each parameter after the command and it will process each sequentially")
@@ -68,7 +71,7 @@ def collect(squery):
     alphabet = list(map(chr, range(97,123)))
     processed = {'foo': -1}
     for letter in alphabet:
-        contents =  urllib.request.urlopen("http://lookup-service-prod.mlb.com/json/named.search_player_all.bam?sport_code=%27mlb%27&active_sw=%27Y%27&name_part=%27" + letter + "%25%27").read()
+        contents = endpoint(letter)
         
         base_data = json.loads(contents)[BASE][RESULT]
         player_count = int(base_data[SIZE])
@@ -137,7 +140,7 @@ def collect(squery):
 
 
 def datatype():
-    contents =  urllib.request.urlopen("http://lookup-service-prod.mlb.com/json/named.search_player_all.bam?sport_code=%27mlb%27&active_sw=%27Y%27&name_part=%27cespedes%25%27").read()
+    contents = endpoint("cespedes")
 
     base_data = json.loads(contents)[BASE][RESULT]
     player_count = int(base_data[SIZE])
@@ -153,7 +156,7 @@ def datatype():
             print(key)
 
 def query_player(player, squery):
-    contents =  urllib.request.urlopen("http://lookup-service-prod.mlb.com/json/named.search_player_all.bam?sport_code=%27mlb%27&active_sw=%27Y%27&name_part=%27" + player + "%25%27").read()
+    contents =  endpoint(player)
 
     base_data = json.loads(contents)[BASE][RESULT]
     player_count = int(base_data[SIZE])
@@ -212,12 +215,6 @@ def query_player(player, squery):
                     out += "," + player_data[k]
 
             print(out)
-                        
-
-        
-            
-
-
 
 def main():
     menu()
